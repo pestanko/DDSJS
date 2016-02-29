@@ -121,7 +121,7 @@ exports.ControlConnectionManager = function()
         this.parseMessage = function (message, ws)
         {
                 var msg = JSON.parse(message);
-                this.wrp.control.parseMessage(ws, message);
+                this.wrp.control.receivedMessage(ws, msg);
         };
 
 

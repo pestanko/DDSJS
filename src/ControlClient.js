@@ -3,7 +3,7 @@
  */
 
 
-exports.ControlClient = function()
+exports.ControlClient = function ()
 {
         var _this = this;
         this.wrp = null;
@@ -20,12 +20,12 @@ exports.ControlClient = function()
         };
         var errCodes = exports.ControlClient.ErrorCodes;
 
-        this.init = function(wrp)
+        this.init = function (wrp)
         {
                 this.wrp = wrp;
         };
 
-        this.error = function(ws, id, message)
+        this.error = function (ws, id, message)
         {
                 var msg = {
                         type: "out",
@@ -43,7 +43,7 @@ exports.ControlClient = function()
                 this.error(ws, 10, message); // Undefined error
         };
 
-        this.message = function(ws, message)
+        this.message = function (ws, message)
         {
                 var msg = {
                         type: "out",
@@ -54,10 +54,9 @@ exports.ControlClient = function()
                 this.wrp.conControl.sendMessage(ws, msg);
         };
 
-        this.receivedMessage = function(ws, message)
+        this.receivedMessage = function (ws, message)
         {
-                switch (message.type)
-                {
+                switch (message.type) {
                         case "command":
                                 this.execute(ws, message.command);
                                 break;
@@ -68,8 +67,7 @@ exports.ControlClient = function()
 
         this.execute = function (ws, command)
         {
-                switch (command.name)
-                {
+                switch (command.name) {
                         case "add":
                                 this.execAddCommand(ws, command);
                                 break;
@@ -91,7 +89,7 @@ exports.ControlClient = function()
                 }
         };
 
-        this.executeParse =function(ws, message)
+        this.executeParse = function (ws, message)
         {
                 // TODO
                 var command = {};
@@ -99,7 +97,7 @@ exports.ControlClient = function()
                 var text = message.text()
         };
 
-        this.execAddCommand = function(ws, command)
+        this.execAddCommand = function (ws, command)
         {
                 var contName = command.containerName;
                 var modName = command.moduleName;
@@ -107,41 +105,39 @@ exports.ControlClient = function()
 
                 try {
                         var ret = this.containers.add(contName, modName, config);
-                } catch (e)
-                {
-
+                } catch (e) {
+                        this.error(ws, e.message());
                 }
         };
 
-        this.execStartCommand = function(ws, command)
+        this.execStartCommand = function (ws, command)
         {
                 // TODO
-                var contName = command.containerName;
+                var contName = command.container;
                 var cont = this.wrp.containers.get(contName);
-                if(!cont)
-                {
-                        this.error(ws, errCodes.CONTAINER_NOT_FOUND , "Cannot find container with name: " + contName);
+                if (!cont) {
+                        this.error(ws, errCodes.CONTAINER_NOT_FOUND, "Cannot find container with name: " + contName);
                         return;
                 }
                 cont.start();
-                this.message(ws, "Container [" + contName + "] started." );
+                this.message(ws, "Container [" + contName + "] started.");
         };
 
-        this.execStopCommand = function(ws, command)
+        this.execStopCommand = function (ws, command)
         {
                 // TODO
         };
 
-        this.execListCommand = function(ws, command)
+        this.execListCommand = function (ws, command)
         {
                 // TODO
         };
-        this.execInfoCommand = function(ws, command)
+        this.execInfoCommand = function (ws, command)
         {
                 // TODO
         };
 
-        this.execRMCommand = function(ws, command)
+        this.execRMCommand = function (ws, command)
         {
                 // TODO
         };
