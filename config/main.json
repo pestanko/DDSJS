@@ -1,0 +1,16 @@
+{
+        "port": 10111,
+        "controlPort" : 10110,
+        "dirs": {
+                "modules": "./modules",
+                "public": "./public"
+        },
+        "containers":{
+                "example" : {
+                        "module": "example",
+                        "start" : true,
+                        "config" : null
+                }
+
+        }
+}

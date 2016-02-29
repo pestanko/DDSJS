@@ -1,0 +1,24 @@
+{
+  "name": "datadistrib",
+  "version": "1.0.0",
+  "description": "Data distribution server for javascript application throught websocket",
+  "main": "server.js",
+  "dependencies": {
+    "winston": "^2.1.1",
+    "ws": "^1.0.1"
+  },
+  "dependecies":
+  ["ws", "winston"]
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "datadistribution",
+    "websocket",
+    "nodejs"
+  ],
+  "author": "Peter Stanko",
+  "license": "ISC"
+}
