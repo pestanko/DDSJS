@@ -12,10 +12,15 @@
  *      - rm containerName
  */
 
+        // TODO - REWRITE !
+
+var WebSocket = require('ws');
+var log = require('winston');
+var GetOpt = require('node-getopt');
 
 function OptionsParser()
 {
-        this.command = {};
+        this.command = null;
         var _this = this;
 
         this.actInfo = {
@@ -79,10 +84,13 @@ function OptionsParser()
                                 container: cont_name
                         }
                 },
-                help: this.showHelp,
+                help: function(argv) {
+                        _this.showHelp(argv);
+                },
                 list: function actionList(argv)
                 {
                         var select = argv[2];
+                        _this.command =  {};
                         _this.command.action = "list";
 
                         if (select == "modules") {
@@ -122,7 +130,7 @@ function OptionsParser()
         this.parseOptions = function (argv)
         {
                 argv = argv || process.argv;
-                var action = argv[0];
+                var action = argv[2];
 
                 if (!action) {
                         action = "help";
@@ -134,6 +142,7 @@ function OptionsParser()
                                 act(argv);
                         } else {
                                 this.actions.help(argv);
+                                throw "Action [" + action + "]  does not exists!";
                         }
                 } catch (e) {
                         console.error(e);
@@ -155,28 +164,62 @@ function OptionsParser()
         }
 }
 
+function Connection()
+{
+        var _this = this;
+        this.ws = null;
+
+        this.connect = function(host, callback)
+        {
+                host = host || 'ws://localhost:10110';
+                this.ws =  new WebSocket(host);
+
+                this.ws.on('open', function open()
+                {
+                        console.info("Connected to remote host.");
+                        callback();
+                });
+
+                this.ws.on('message', function (data, flags)
+                {
+
+                });
+        };
+
+        this.sendMessage = function(msg)
+        {
+                var data = JSON.stringify(msg);
+                this.ws.send(data);
+        };
+};
+
+
 
 (function ()
 {
+        var opt = new OptionsParser();
+        var _this = this;
+        var connection = new Connection();
 
+        opt.parseOptions();
+        var cmd = opt.command;
 
-        var WebSocket = require('ws');
-        var log = require('winston');
-        var GetOpt = require('node-getopt');
-
-
-        // Configuration
-        var ws = new WebSocket('ws://localhost:10110');
-
-        ws.on('open', function open()
+        if(cmd == null)
         {
-                log.info("Connected to remote host.");
-        });
-
-        ws.on('message', function (data, flags)
+                // DO NOTHING
+        }
+        else
         {
+                function connectionReady()
+                {
+                        connection.sendMessage(cmd);
+                }
 
-        });
+                var host = 'ws://localhost:10110';
+                connection.connect(host, connectionReady());
+
+        }
+
 
 
 })();
